@@ -10,10 +10,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
+@Table(name="HST_DTR")
 @IdClass(HistoricoDoutorId.class)
 public class HistoricoDoutor implements Serializable {
     @Id

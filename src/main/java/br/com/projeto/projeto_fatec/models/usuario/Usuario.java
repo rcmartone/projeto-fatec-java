@@ -1,39 +1,57 @@
 package br.com.projeto.projeto_fatec.models.usuario;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.projeto.projeto_fatec.models.cliente.Cliente;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name="USR")
-public class Usuario implements Serializable {
-    
+@Table(name = "USR")
+public class Usuario implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
-    @NotNull
-    private Long id;
-    @Column(name="email", length = 45)
+    private Long id; /* Usuario */
+
+    @Column(name = "email", length = 45)
     @NotBlank
     private String email;
-    @Column(name="senha", length = 255)
+
+    @Column(name = "senha", length = 255)
     @NotBlank
     private String senha;
-    @Column(name="papel", length = 7)
+
+    @Column(name = "papel", length = 7)
     @Enumerated(EnumType.ORDINAL)
     @NotNull
     private Papel papel;
+
     @NotNull
-    private Timestamp dataInicio;
+    private LocalDateTime dataInicio;
     private Timestamp dataFim;
+
     @NotNull
     private Boolean ativo;
 
-    @OneToOne(mappedBy = "usuario")
+    @OneToOne(mappedBy = "usuario", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
     private Cliente cliente;
 
     public Long getId() {
@@ -60,11 +78,11 @@ public class Usuario implements Serializable {
         this.senha = senha;
     }
 
-    public Timestamp getDataInicio() {
+    public LocalDateTime getDataInicio() {
         return dataInicio;
     }
 
-    public void setDataInicio(Timestamp dataInicio) {
+    public void setDataInicio(LocalDateTime dataInicio) {
         this.dataInicio = dataInicio;
     }
 
@@ -100,6 +118,39 @@ public class Usuario implements Serializable {
         this.papel = papel;
     }
 
-    
-}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.papel.getNomePapel()));
+    }
 
+    @Override
+    public String getPassword() {
+        return this.senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.ativo;
+    }
+
+}

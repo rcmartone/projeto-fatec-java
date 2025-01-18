@@ -1,0 +1,114 @@
+package br.com.projeto.projeto_fatec.rests;
+
+import java.time.LocalDateTime;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.com.projeto.projeto_fatec.dto.RequisicaoLoginDto;
+import br.com.projeto.projeto_fatec.dto.RequisicaoRegistrarPessoaDto;
+import br.com.projeto.projeto_fatec.dto.RespostaLoginDto;
+import br.com.projeto.projeto_fatec.models.cliente.Cliente;
+import static br.com.projeto.projeto_fatec.models.usuario.Papel.CLIENTE;
+import br.com.projeto.projeto_fatec.models.usuario.Usuario;
+import br.com.projeto.projeto_fatec.services.EmailService;
+import br.com.projeto.projeto_fatec.services.JwtService;
+import br.com.projeto.projeto_fatec.services.UsuarioService;
+import br.com.projeto.projeto_fatec.utils.Validator;
+
+@RestController
+@RequestMapping("/registrar")
+public class RegistroRest {
+
+    private final UsuarioService usuarioService;
+    private final JwtService jwt;
+    private final EmailService emailService;
+
+    @Value("${app.urlbase}")
+    private String urlBase;
+
+    public RegistroRest(EmailService emailService, JwtService jwt, UsuarioService usuarioService) {
+        this.emailService = emailService;
+        this.jwt = jwt;
+        this.usuarioService = usuarioService;
+    }
+
+    @GetMapping("/teste")
+    public String getTeste() {
+        return "Funcionou";
+    }
+
+    @PostMapping("/cliente")
+    public ResponseEntity<String> registro(@RequestBody RequisicaoRegistrarPessoaDto req) {
+
+        // Validação da força da senha
+        if (!Validator.senhaForte(req.senha())) {
+            return ResponseEntity.badRequest().body("Senha não atende aos requisitos mínimos.");
+        }
+
+        // Validação do CPF
+        if (!Validator.cpfValido(req.cpf())) {
+            return ResponseEntity.badRequest().body("CPF inválido!");
+        }
+
+        // Validação de campos obrigatórios
+        if (req.nome() == null || req.nome().isBlank() ||
+                req.email() == null || req.email().isBlank() ||
+                req.telefone() == null || req.telefone().isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Campos obrigatórios nulos ou inválidos");
+        }
+
+        // Criação do usuario + vincular
+
+        Usuario usuario = new Usuario();
+        usuario.setEmail(req.email());
+        usuario.setSenha(req.senha());
+        usuario.setAtivo(false);
+        usuario.setDataInicio(LocalDateTime.now());
+        usuario.setPapel(CLIENTE);
+        Cliente cliente = new Cliente();
+        cliente.setUsuario(usuario);
+        cliente.setCpf(req.cpf());
+        cliente.setSexo(req.sexo());
+        cliente.setTelefone(req.telefone());
+        cliente.setRg(req.rg());
+        cliente.setNome(req.nome());
+        cliente.setClientesContato(req.contatos());
+        cliente.setClientesPrecedente(req.precedentes());
+        usuario.setCliente(cliente);
+
+        // salvar no banco de dados
+        usuarioService.salvarUsuario(usuario);
+
+        // String linkVerificacao = urlBase + "/verificar-email?token=" +
+        // jwt.gerarToken(usuario);
+        // try {
+        // emailService.enviarEmailHtml(req.email(), "", linkVerificacao,
+        // "confirmar-email.html");
+        // } catch (MessagingException e) {
+        // e.printStackTrace();
+        // }
+        // Retornar 200 sem corpo
+
+        emailService.sendEmail(req.email(), "Email From JavaSpringBoot",
+                "Hi There, this is an email from JavaSpringBoot");
+
+        return ResponseEntity.ok().build();
+    }
+
+    // Geração de token de verificação
+    @PostMapping
+    public ResponseEntity<RespostaLoginDto> login(@RequestBody RequisicaoLoginDto req) {
+
+        Usuario usuarioAutenticado = usuarioService.authenticate(req);
+        String jwtToken = jwt.gerarToken(usuarioAutenticado);
+
+        return ResponseEntity.ok(new RespostaLoginDto(jwtToken));
+    }
+}

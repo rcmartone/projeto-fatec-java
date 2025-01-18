@@ -19,35 +19,41 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name="CLT")
+@Table(name = "CLT")
 public class Cliente implements Serializable {
 
     @Id
-    @Column(name="cpf", length=11)
+    @Column(name = "cpf", length = 11)
     @NotBlank
     private String cpf;
-    @Column(name="nome", length=45)
+
+    @Column(name = "nome", length = 45)
     @NotBlank
     private String nome;
-    @Column(name="rg", length=12)
+
+    @Column(name = "rg", length = 12)
     private String rg;
-    @Column(name="telefone", length=11)
+
+    @Column(name = "telefone", length = 11)
     @NotBlank
     private String telefone;
+
     @NotNull
     @Enumerated(EnumType.ORDINAL)
     private Sexo sexo;
 
-    @OneToOne(cascade=CascadeType.REMOVE)
-    @JoinColumn(name = "USR_id",referencedColumnName="id")
+    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+    @JoinColumn(name = "USR_id", referencedColumnName = "id")
     private Usuario usuario;
 
-    @OneToMany( mappedBy="cliente", fetch=FetchType.LAZY)//Lazy busca apenas do objeto referenciado, caso não use, a busca nunca será realizada
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY) // Lazy busca apenas do objeto referenciado, caso não use,
+                                                             // a busca nunca será realizada
     private List<ClientePrecedente> clientesPrecedente;
 
-    @OneToMany( mappedBy="cliente", fetch=FetchType.LAZY)//Lazy busca apenas do objeto referenciado, caso não use, a busca nunca será realizada
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY) // Lazy busca apenas do objeto referenciado, caso não use,
+                                                             // a busca nunca será realizada
     private List<ClienteContato> clientesContato;
-    
+
     public String getCpf() {
         return cpf;
     }
@@ -111,7 +117,4 @@ public class Cliente implements Serializable {
     public void setClientesContato(List<ClienteContato> clientesContato) {
         this.clientesContato = clientesContato;
     }
-
-    
 }
-
