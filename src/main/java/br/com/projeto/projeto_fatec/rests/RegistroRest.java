@@ -1,23 +1,25 @@
 package br.com.projeto.projeto_fatec.rests;
 
 import java.time.LocalDateTime;
-
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import br.com.projeto.projeto_fatec.dto.RequisicaoLoginDto;
 import br.com.projeto.projeto_fatec.dto.RequisicaoRegistrarPessoaDto;
 import br.com.projeto.projeto_fatec.dto.RespostaLoginDto;
+import br.com.projeto.projeto_fatec.events.EnvioEmailEvent;
+import br.com.projeto.projeto_fatec.events.PublicadorDeEvento;
 import br.com.projeto.projeto_fatec.models.cliente.Cliente;
 import static br.com.projeto.projeto_fatec.models.usuario.Papel.CLIENTE;
 import br.com.projeto.projeto_fatec.models.usuario.Usuario;
-import br.com.projeto.projeto_fatec.services.EmailService;
 import br.com.projeto.projeto_fatec.services.JwtService;
 import br.com.projeto.projeto_fatec.services.UsuarioService;
 import br.com.projeto.projeto_fatec.utils.Validator;
@@ -28,14 +30,14 @@ public class RegistroRest {
 
     private final UsuarioService usuarioService;
     private final JwtService jwt;
-    private final EmailService emailService;
+    private final PublicadorDeEvento publicador;
 
     @Value("${app.urlbase}")
     private String urlBase;
 
-    public RegistroRest(EmailService emailService, JwtService jwt, UsuarioService usuarioService) {
-        this.emailService = emailService;
+    public RegistroRest(JwtService jwt, PublicadorDeEvento publicador, UsuarioService usuarioService) {
         this.jwt = jwt;
+        this.publicador = publicador;
         this.usuarioService = usuarioService;
     }
 
@@ -44,6 +46,7 @@ public class RegistroRest {
         return "Funcionou";
     }
 
+    @Transactional
     @PostMapping("/cliente")
     public ResponseEntity<String> registro(@RequestBody RequisicaoRegistrarPessoaDto req) {
 
@@ -86,19 +89,17 @@ public class RegistroRest {
         // salvar no banco de dados
         usuarioService.salvarUsuario(usuario);
 
-        // String linkVerificacao = urlBase + "/verificar-email?token=" +
-        // jwt.gerarToken(usuario);
-        // try {
-        // emailService.enviarEmailHtml(req.email(), "", linkVerificacao,
-        // "confirmar-email.html");
-        // } catch (MessagingException e) {
-        // e.printStackTrace();
-        // }
-        // Retornar 200 sem corpo
+        String linkVerificacao = urlBase + "/verificar-email?token=" +
+                jwt.gerarToken(usuario);
 
-        emailService.sendEmail(req.email(), "Email From JavaSpringBoot",
-                "Hi There, this is an email from JavaSpringBoot");
-
+        Map<String, Object> variaveis = new HashMap<>();
+        variaveis.put("linkConfirmacao", linkVerificacao);
+        try {
+            publicador.publicarEvento(EnvioEmailEvent.class, req.email(), "Confirmação de Email", "confirmar-email",
+                    variaveis);
+        } catch (InstantiationException | IllegalArgumentException ex) {
+            return ResponseEntity.internalServerError().body("Não foi possivel enviar o Email de confirmação");
+        }
         return ResponseEntity.ok().build();
     }
 
