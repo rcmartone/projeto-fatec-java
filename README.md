@@ -21,6 +21,6 @@ Este projeto visa aplicar conhecimentos de Front-End e Back-End no desenvolvimen
 </div>
 <h2><b>Time<b></h2>
 
-| [<img loading="lazy" src="https://avatars.githubusercontent.com/u/59196090?v=4" width=115><br><sub>Rafael Martone</sub>](https://github.com/rcmartone) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/63174851?v=4" width=115><br><sub>Matheus Braz</sub>](https://github.com/matheusboliveir) |
+| [<img loading="lazy" src="https://avatars.githubusercontent.com/u/59196090?s=400&u=f0e9603c0818f0f09dad8e4f4a7d5c893ace4a74&v=4" width=115><br><sub>Rafael Martone</sub>](https://github.com/rcmartone) |  [<img loading="lazy" src="https://avatars.githubusercontent.com/u/63174851?v=4" width=115><br><sub>Matheus Braz</sub>](https://github.com/matheusboliveir) |
 | :---: | :---: |
 
