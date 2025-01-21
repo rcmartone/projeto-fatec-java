@@ -46,7 +46,7 @@ public class RegistroRest {
         return "Funcionou";
     }
 
-    @Transactional
+    @Transactional(rollbackFor = { InstantiationException.class, IllegalArgumentException.class })
     @PostMapping("/cliente")
     public ResponseEntity<String> registro(@RequestBody RequisicaoRegistrarPessoaDto req) {
 
