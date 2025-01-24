@@ -16,8 +16,8 @@ import br.com.projeto.projeto_fatec.repositories.UsuarioRepository;
 public class ApplicationConfiguration {
     private final UsuarioRepository usuarioRepository;
 
-    public ApplicationConfiguration(UsuarioRepository userRepository) {
-        this.usuarioRepository = userRepository;
+    public ApplicationConfiguration(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Bean

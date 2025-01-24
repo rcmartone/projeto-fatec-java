@@ -39,8 +39,6 @@ public class LoginRest {
         this.usuarioService = usuarioService;
     }
 
-    /* @PostMapping("/SUBROTA") */
-
     @PostMapping
     public ResponseEntity<RespostaLoginDto> login(@RequestBody RequisicaoLoginDto req) {
 

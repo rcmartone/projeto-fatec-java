@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.projeto.projeto_fatec.models.cliente.Cliente;
+import br.com.projeto.projeto_fatec.models.doutor.Doutor;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -53,6 +54,9 @@ public class Usuario implements UserDetails {
 
     @OneToOne(mappedBy = "usuario", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
     private Cliente cliente;
+
+    @OneToOne(mappedBy = "usuario", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+    private Doutor doutor;
 
     public Long getId() {
         return id;
@@ -151,6 +155,14 @@ public class Usuario implements UserDetails {
     @Override
     public boolean isEnabled() {
         return this.ativo;
+    }
+
+    public Doutor getDoutor() {
+        return doutor;
+    }
+
+    public void setDoutor(Doutor doutor) {
+        this.doutor = doutor;
     }
 
 }

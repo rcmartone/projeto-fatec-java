@@ -3,14 +3,14 @@ package br.com.projeto.projeto_fatec.models.doutor;
 import java.io.Serializable;
 
 import br.com.projeto.projeto_fatec.models.usuario.Usuario;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
@@ -19,17 +19,17 @@ import jakarta.validation.constraints.NotBlank;
 public class Doutor implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
-    @Column(name="nome", length=45)
+    @Column(name = "nome", length = 45)
     @NotBlank
     private String nome;
-    @Column(name="cro", length=6)
+    @Column(name = "cro", length = 6)
     @NotBlank
     private String cro;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "USR_id", referencedColumnName="id")
+    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+    @JoinColumn(name = "USR_id", referencedColumnName = "id")
     private Usuario usuario;
 
     public Long getId() {
@@ -65,4 +65,3 @@ public class Doutor implements Serializable {
     }
 
 }
-

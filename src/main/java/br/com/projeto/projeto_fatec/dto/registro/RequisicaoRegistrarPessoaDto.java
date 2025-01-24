@@ -1,4 +1,4 @@
-package br.com.projeto.projeto_fatec.dto;
+package br.com.projeto.projeto_fatec.dto.registro;
 
 import java.time.LocalDate;
 import java.util.List;
