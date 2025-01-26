@@ -20,9 +20,6 @@ public class PublicadorDeEvento {
             throws InstantiationException, IllegalArgumentException {
         Object[] argThis = new Object[args.length + 1];
         argThis[0] = this;
-        // Log teste de argThis
-        System.out.println(Arrays.toString(argThis));
-        // Fim Log teste de argThis
         System.arraycopy(args, 0, argThis, 1, args.length);
         try {
 
@@ -33,12 +30,7 @@ public class PublicadorDeEvento {
                         "Argumentos enviados não cosrrespondem aos parâmetros de nenhum construtor da classe "
                                 + tipoEvento.getName());
             }
-            // T evento = construtor.newInstance(argThis);
             T evento = construtor.newInstance(Arrays.copyOfRange(argThis, 0, argThis.length));
-            // Log teste de argumentos
-            System.out.println("Args enviados para newInstance: " + Arrays.toString(argThis));
-            System.out.println("Construtor selecionado: " + construtor);
-            // Fim Log Teste
             publicadorEvento.publishEvent(evento);
             System.out.println("Evento publicado: " + tipoEvento.getSimpleName());
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
