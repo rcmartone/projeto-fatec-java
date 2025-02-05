@@ -46,12 +46,10 @@ public class Cliente implements Serializable {
     @JoinColumn(name = "USR_id", referencedColumnName = "id")
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY) // Lazy busca apenas do objeto referenciado, caso não use,
-                                                             // a busca nunca será realizada
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
     private List<ClientePrecedente> clientesPrecedente;
 
-    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY) // Lazy busca apenas do objeto referenciado, caso não use,
-                                                             // a busca nunca será realizada
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
     private List<ClienteContato> clientesContato;
 
     public String getCpf() {

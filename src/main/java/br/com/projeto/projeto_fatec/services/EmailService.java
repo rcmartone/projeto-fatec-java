@@ -48,7 +48,7 @@ public class EmailService {
         helper.setTo(destinatario);
         helper.setSubject(assunto);
         helper.setText(html, true);
-        helper.setFrom("rafaelcmartone@gmail.com");
+        helper.setFrom("rafaelcmartone@gmail.com");// Email para teste
         mailSender.send(message);
     }
 

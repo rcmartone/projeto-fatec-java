@@ -1,12 +1,10 @@
 package br.com.projeto.projeto_fatec.utils;
 
 public class ValidadorCpf {
-
-    public static boolean cpfValido(String cpf) {
+    public static void cpfValido(String cpf) {
         if (cpf == null || cpf.length() != 11 || cpf.matches("(\\d)\\1{10}")) {
-            return false; // CPF nulo, com tamanho inválido ou com todos os dígitos iguais
+            throw new IllegalArgumentException("CPF inválido!");
         }
-
         try {
             // Cálculo do primeiro dígito verificador
             int soma1 = 0;
@@ -25,15 +23,15 @@ public class ValidadorCpf {
             digito2 = (digito2 >= 10) ? 0 : digito2;
 
             // Comparação dos dígitos calculados com os fornecidos
-            return digito1 == Character.getNumericValue(cpf.charAt(9)) &&
-                    digito2 == Character.getNumericValue(cpf.charAt(10));
-
+            if (digito1 != Character.getNumericValue(cpf.charAt(9)) ||
+                    digito2 != Character.getNumericValue(cpf.charAt(10))) {
+                throw new IllegalArgumentException("CPF inválido!");
+            }
         } catch (NumberFormatException e) {
-            return false; // CPF contém caracteres não numéricos
+            throw new IllegalArgumentException("CPF inválido!");
         }
     }
 }
-
 /*
  * -----------------------------------------------------------------------------
  * Desmembrando a expressão ---- (\\d)\\1{10} ----

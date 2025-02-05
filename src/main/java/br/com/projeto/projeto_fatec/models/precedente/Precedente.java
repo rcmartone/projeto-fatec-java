@@ -4,24 +4,35 @@ import java.io.Serializable;
 import java.util.List;
 
 import br.com.projeto.projeto_fatec.models.cliente.ClientePrecedente;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name="PRC")
+@Table(name = "PRC_SD")
 public class Precedente implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
-    @Column(name="nome", length=45)
+    @Column(name = "nome", length = 45)
     @NotBlank
     private String nome;
-    @Column(name="adicional", length=45)
-    private String adicional;
-    @OneToMany(mappedBy="precedente", fetch=FetchType.LAZY)
+    @Column(name = "adicional")
+    @NotNull
+    private Boolean adicional;
+
+    @OneToMany(mappedBy = "precedente", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ClientePrecedente> clientesPrecedente;
-    
+
     public Long getId() {
         return id;
     }
@@ -38,11 +49,11 @@ public class Precedente implements Serializable {
         this.nome = nome;
     }
 
-    public String getAdicional() {
+    public Boolean getAdicional() {
         return adicional;
     }
 
-    public void setAdicional(String adicional) {
+    public void setAdicional(Boolean adicional) {
         this.adicional = adicional;
     }
 
@@ -54,5 +65,3 @@ public class Precedente implements Serializable {
         this.clientesPrecedente = clientesPrecedente;
     }
 }
-
-

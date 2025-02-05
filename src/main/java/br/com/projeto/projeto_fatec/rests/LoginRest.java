@@ -16,21 +16,6 @@ import br.com.projeto.projeto_fatec.services.UsuarioService;
 @RequestMapping("/login")
 public class LoginRest {
 
-    /*----Injeção de dependencia-----
-     * Processo de se criar e prover instancias para as
-     * propriedades que uma classe precisa para ser instanciada e são fornecidas
-     * de fora da classe, aqui pelo Spring Framework e é um tipo de inversão de controle,
-     * onde o controle é de quem utilizar a classe e não dela mesma.
-     * 
-     * ------ Pontos de injeção--------
-     *  
-     * 1 - Construtor, criar classe e propriedades de instancia 
-     * e no construtor você recebe cada propriedade de instacia, sem o
-     * trabalho de instanciar as propriedades, recebendo elas via construtor.
-     * 
-     * 2 - Pelo Setter de cada propriedade que se precisa.
-     */
-
     private final UsuarioService usuarioService;
     private final JwtService jwt;
 
