@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.projeto.projeto_fatec.dto.RequisicaoLoginDto;
-import br.com.projeto.projeto_fatec.dto.RespostaLoginDto;
+import br.com.projeto.projeto_fatec.dto.registro.requisicao.RequisicaoLoginDto;
+import br.com.projeto.projeto_fatec.dto.resposta.RespostaLoginDto;
 import br.com.projeto.projeto_fatec.models.usuario.Usuario;
 import br.com.projeto.projeto_fatec.services.JwtService;
 import br.com.projeto.projeto_fatec.services.UsuarioService;

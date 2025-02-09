@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.projeto.projeto_fatec.dto.RequisicaoEditarContatoDto;
 import br.com.projeto.projeto_fatec.dto.registro.ContatoDto;
 import br.com.projeto.projeto_fatec.dto.registro.PrecedenteDto;
-import br.com.projeto.projeto_fatec.dto.registro.RequisicaoTrocarSenhaDto;
+import br.com.projeto.projeto_fatec.dto.registro.requisicao.RequisicaoEditarContatoDto;
+import br.com.projeto.projeto_fatec.dto.registro.requisicao.RequisicaoTrocarSenhaDto;
 import br.com.projeto.projeto_fatec.models.cliente.Cliente;
 import br.com.projeto.projeto_fatec.models.cliente.ClienteContato;
 import br.com.projeto.projeto_fatec.models.cliente.ClientePrecedente;
@@ -30,7 +30,7 @@ import br.com.projeto.projeto_fatec.utils.ValidadorTelefone;
 import jakarta.transaction.Transactional;
 
 @RestController
-@RequestMapping("/cliente")
+@RequestMapping("/editar-cliente")
 public class EditarClienteRest {
 
     private final UsuarioService usuarioService;
@@ -49,7 +49,7 @@ public class EditarClienteRest {
         this.usuarioService = usuarioService;
     }
 
-    @PutMapping("/editar-precedentes")
+    @PutMapping("/precedentes")
     @Transactional
     public ResponseEntity<String> editarPrecedentes(@RequestBody List<PrecedenteDto> req)
             throws IllegalArgumentException {
@@ -93,7 +93,7 @@ public class EditarClienteRest {
         return ResponseEntity.ok("Precedentes atualizados com sucesso.");
     }
 
-    @PutMapping("/editar-contatos")
+    @PutMapping("/contatos")
     @Transactional
     public ResponseEntity<String> editarContatos(@RequestBody RequisicaoEditarContatoDto reqs)
             throws IllegalArgumentException {

@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import br.com.projeto.projeto_fatec.dto.registro.RequisicaoRegistrarClienteDto;
-import br.com.projeto.projeto_fatec.dto.registro.RequisicaoRegistrarDoutorDto;
+import br.com.projeto.projeto_fatec.dto.registro.requisicao.RequisicaoRegistrarClienteDto;
+import br.com.projeto.projeto_fatec.dto.registro.requisicao.RequisicaoRegistrarDoutorDto;
 import br.com.projeto.projeto_fatec.models.cliente.Cliente;
 import br.com.projeto.projeto_fatec.models.cliente.ClienteContato;
 import br.com.projeto.projeto_fatec.models.cliente.ClientePrecedente;

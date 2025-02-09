@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.projeto.projeto_fatec.dto.registro.RequisicaoRegistrarDoutorDto;
-import br.com.projeto.projeto_fatec.dto.registro.RequisicaoRegistrarClienteDto;
+import br.com.projeto.projeto_fatec.dto.registro.requisicao.RequisicaoConfirmarEmailDto;
+import br.com.projeto.projeto_fatec.dto.registro.requisicao.RequisicaoRegistrarClienteDto;
+import br.com.projeto.projeto_fatec.dto.registro.requisicao.RequisicaoRegistrarDoutorDto;
+import br.com.projeto.projeto_fatec.dto.resposta.RespostaConfirmarEmailDto;
 import br.com.projeto.projeto_fatec.services.UsuarioService;
 
 @RestController
@@ -32,4 +34,9 @@ public class RegistroRest {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/confirmar-email")
+    public ResponseEntity<RespostaConfirmarEmailDto> confirmarEmail(@RequestBody RequisicaoConfirmarEmailDto req) {
+        String token = usuarioService.ativarUsuario(req);
+        return ResponseEntity.ok(new RespostaConfirmarEmailDto(token));
+    }
 }

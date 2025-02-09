@@ -15,9 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import br.com.projeto.projeto_fatec.dto.RequisicaoLoginDto;
-import br.com.projeto.projeto_fatec.dto.registro.RequisicaoRegistrarClienteDto;
-import br.com.projeto.projeto_fatec.dto.registro.RequisicaoRegistrarDoutorDto;
+import br.com.projeto.projeto_fatec.dto.registro.requisicao.RequisicaoConfirmarEmailDto;
+import br.com.projeto.projeto_fatec.dto.registro.requisicao.RequisicaoLoginDto;
+import br.com.projeto.projeto_fatec.dto.registro.requisicao.RequisicaoRegistrarClienteDto;
+import br.com.projeto.projeto_fatec.dto.registro.requisicao.RequisicaoRegistrarDoutorDto;
 import br.com.projeto.projeto_fatec.events.EnvioEmailEvent;
 import br.com.projeto.projeto_fatec.events.PublicadorDeEvento;
 import br.com.projeto.projeto_fatec.models.usuario.Usuario;
@@ -87,6 +88,27 @@ public class UsuarioService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário não encontrado."));
+    }
+
+    public String ativarUsuario(RequisicaoConfirmarEmailDto req) {
+        Usuario usuario = usuarioRepository.findByEmail(req.email())
+                .orElseThrow(() -> new IllegalArgumentException("Usuario não encontrado"));
+        if (!jwt.tokenValido(req.token(), usuario)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token expirado.");
+        }
+        boolean estadoAtualConta = usuario.isAtivo();
+        usuario.setAtivo(true);
+        salvarUsuario(usuario);
+
+        try {
+            Usuario usuarioAutenticado = authenticate(new RequisicaoLoginDto(req.email(), req.senha()));
+            return jwt.gerarToken(usuarioAutenticado);
+        } catch (ResponseStatusException e) {
+            if (!estadoAtualConta) {
+                usuario.setAtivo(false);
+            }
+            throw e;
+        }
     }
 
     @Transactional
